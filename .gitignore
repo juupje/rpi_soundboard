@@ -1,6 +1,8 @@
 audio/A
+audio/B
 audio/C
 audio/D
+imgs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
