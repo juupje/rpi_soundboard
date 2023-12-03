@@ -1,0 +1,51 @@
+.track_table {
+    margin: 0 auto;
+}
+
+.track_table td, .track_table th {
+    padding: 4px;
+    font-size: 1.2em;
+}
+
+.gg-play-button {
+    box-sizing: border-box;
+    position: relative;
+    display: block;
+    transform: scale(var(--ggs,1.75));
+    width: 22px;
+    height: 22px
+}
+
+.gg-play-button::before {
+    content: "";
+    display: block;
+    box-sizing: border-box;
+    position: absolute;
+    width: 0;
+    height: 10px;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 6px solid;
+    top: 6px;
+    left: 9px;
+    color: green;
+}
+
+#popup {
+    position: fixed;
+    bottom: 5%;
+    right: 5%;
+    margin: auto;
+    background: #00ff00;
+    border-radius: 20px;
+    transition: all 0.15s ease-in-out;
+    width: 25%;
+    min-width: 600px;
+    opacity: 1;
+    text-align:center;
+    padding: 10px;
+}
+
+#popup.hide-popup {
+    opacity: 0;
+}

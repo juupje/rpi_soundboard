@@ -8,6 +8,7 @@ from RPi import GPIO
 from keypad import KeyPad
 from soundboard import Soundboard
 import subprocess, io
+import utils
 
 class Controller:
     def __init__(self):
@@ -25,7 +26,9 @@ class Controller:
         lcd_d7 = digitalio.DigitalInOut(board.D18)
 
         self.switch_pin = digitalio.DigitalInOut(board.D21)
-        off_pin = 14
+
+        self.shutdown_flag = 0
+        play_pin = 14
 
         clk_pin = 2
         dt_pin = 3
@@ -38,10 +41,6 @@ class Controller:
         # Initialise the lcd class
         self.lcd = characterlcd.Character_LCD_Mono(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6,
                                             lcd_d7, lcd_columns, lcd_rows)
-        
-        self.sound = 0
-        self.page = 0
-        self.n_tracks_on_page = 9
 
         # ===== SETUP GPIO's and connections =====
         GPIO.setmode(GPIO.BCM)
@@ -55,10 +54,13 @@ class Controller:
         self.keypad.addHandler(self.kp_callback)
 
         self.soundboard = Soundboard()
+        self.sound = 0
+        self.page = "A"
+        self.n_tracks_on_page = self.soundboard.get_ntracks(self.page)
 
-        GPIO.setup(off_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.add_event_detect(off_pin, GPIO.FALLING, callback=self.stop, bouncetime=100)
-        self.update_lcd_message()
+        GPIO.setup(play_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.add_event_detect(play_pin, GPIO.FALLING, callback=lambda _: self.play(), bouncetime=200)
+        self.lcd.message = f"{utils.getIP()}"
 
     def __del__(self):
         self.cleanup()
@@ -72,33 +74,32 @@ class Controller:
         for pin in self.pins:
             pin.deinit()
         GPIO.cleanup()
-        sys.exit(0)
+
+    def play(self):
+        print("Playing sound!")
+        self.soundboard.play_sound(self.page, self.sound)
 
     def stop(self, channel=None):
-        #trigger shutdown
-        option = "shutdown"
-        cmd = ["bash", f"shutdown", option]
-        with open("output.txt", "w+") as file:
-            subprocess.run(cmd, stdout=file)
-            print("Executed command '" + " ".join(cmd) + "'")
-            file.seek(io.SEEK_SET)
-            last_line = ""
-            output = ""
-            for line in file:
-                output += line
-                last_line = line.strip()
-            print("Got response '" + output +"'")
-            if(last_line == option):
-                print("Shutting down")
-                self.lcd.message = "Shutdown..."
-                self.cleanup()
-            else:
-                return f"Shutdown failed... output {output}"
+        self.cleanup()
+        print("shutting down")
+        command = "sudo /sbin/shutdown -h now"
+        import subprocess
+        process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+        output = process.communicate()[0]
+        print(output)
+
+    def set_page_track(self, page:str, track:int):
+        if(self.soundboard.page_exists(page)):
+            if(0 < track <= self.soundboard.get_ntracks(page)):
+                self.page = page
+                self.sound = track
+                return True
+        return False
 
     def update_lcd_message(self):
-        message = "Page: " + "ABCD"[self.page] +f" Sound: {self.sound+1:d}"
+        message = "Page: " + self.page +f" Sound: {self.sound+1:d}"
         try:
-            desc = self.soundboard.get_description("ABCD"[self.page], self.sound)
+            desc = self.soundboard.get_description(self.page, self.sound)
             if(desc):
                 if(len(desc) > 16): desc = desc[:16]
                 message += f"\n{desc:16s}"
@@ -109,7 +110,7 @@ class Controller:
         self.lcd.message = message
 
     def setpage(self, _page:str):
-        self.page = "ABCD".index(_page)
+        self.page = _page
         self.n_tracks_on_page = self.soundboard.get_ntracks(_page)
         if(self.n_tracks_on_page==0):
             print("Selected page doesn't exist")
@@ -128,13 +129,18 @@ class Controller:
             self.setpage(key)
             self.update_lcd_message()
         elif(key == "#"):
-            self.soundboard.play_sound("ABCD"[self.page], self.sound)
+            if(self.shutdown_flag > 0 and time.time()-self.shutdown_flag < 5):
+                self.stop()
+            else:
+                self.lcd.message = "Shutdown?       \nPress # again   "
+                self.shutdown_flag = time.time()
         elif(key == "*"):
-            pass
+            if(self.page == "D"):
+                self.setpage("H")
         else:
             try:
                 self.sound = int(key)-1
                 self.update_lcd_message()
-                self.soundboard.play_sound("ABCD"[self.page], self.sound)
+                self.play()
             except ValueError as e:
                 print(e)

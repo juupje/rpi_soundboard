@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Joep's Soundboard</title>
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" title="main"/>
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
+        {{ script|safe }}
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/home">Soundboard</a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                    <li><a href="/home" class="selected">Overview</a></li>
+                    <li><a href="/upload">Upload</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container" id='main-content' style="max-width: 700px">
+        <div class="row section">
+            <h3 style="text-align: center" id="page_A">Page A</h3>
+            <div class="col"></div>
+                {{ table_page_A|safe }}
+            </div>
+        </div>
+        <div class="row section">
+            <h3 style="text-align: center" id="page_B">Page B</h3>
+            <div class="col">
+                {{ table_page_B|safe }}
+            </div>
+        </div>
+        <div class="row section">
+            <h3 style="text-align: center" id="page_C">Page C</h3>
+            <div class="col">
+                {{ table_page_C|safe }}
+            </div>
+        </div>
+        <div class="row section">
+            <h3 style="text-align: center" id="page_D">Page D</h3>
+            <div class="col">
+                {{ table_page_D|safe }}
+            </div>
+        </div>
+        </div>
+        <div id="popup" class="hide-popup">
+            <div class="content">
+                Sound played!
+            </div>
+        </div>
+    </body>
+</html>

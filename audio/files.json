@@ -4,20 +4,32 @@
         {"file": "A/yesss2.mp3", "name": "Yessss 2"},
         {"file": "A/yesss_yesss.mp3", "name": "yess yess"},
         {"file": "A/speed.mp3", "name": "Speeed!"},
-        {"file": "A/the_speed.mp3", "name": "The Speed!"}
+        {"file": "A/the_speed.mp3", "name": "The Speed!"},
+        {"file": "A/gratis.mp3", "name": "Gratis"},
+        {"file": "A/bier.mp3", "name": "Haha Bier!"}
     ],
     "B": [
         {"file": "B/metal_pipe.mp3", "name": "Metal pipe"},
         {"file": "B/wilhelm.mp3", "name": "Wilhelm"},
-        {"file": "B/DunDunDun.mp3", "name": "Dun Dun Dunn!"}
+        {"file": "B/DunDunDun.mp3", "name": "Dun Dun Dunn!"},
+        {"file": "B/minecraft.mp3", "name": "Hmmm"},
+        {"file": "B/roblox.mp3", "name": "Oof!"}
     ],
-    "C": {},
+    "C": [
+        {"file": "C/dood.mp3", "name": "Dood"},
+        {"file": "C/oeioei.mp3", "name": "Oei Oei Oei"},
+        {"file": "C/caution.mp3", "name": "Triple Caution"},
+        {"file": "C/twee karrn.mp3", "name": "Twee Kar'n"}
+    ],
     "D": [
         {"file": "D/crickets.mp3", "name": "Crickets"},
         {"file": "D/horn.mp3", "name": "Horn"},
         {"file": "D/quack.mp3", "name": "Quack"},
         {"file": "D/clap.mp3", "name": "Clap"},
         {"file": "D/trumpet.mp3", "name": "Trumpet"},
-        {"file": "D/badum tssss.mp3", "name": "Badum Tsss"}
-    ]
+        {"file": "D/badum tsss.mp3", "name": "Badum Tsss"}
+    ],
+   "H": [
+       {"file": "hidden/cheese.mp3", "name": "Cheese"}
+   ]
 }
